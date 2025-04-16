@@ -1,12 +1,13 @@
+import std/os/env
+
 import utest
+import parser
 
 fun main()
-  val test-test = fn()
-    suite("a suite") fn()
-      test("a1 test") fn()
-        assert-eq(1, 1)
-    suite("b suite") fn()
-      test("b1 test") fn()
-        assert-eq(1, 2)
+  val args: list<string> = get-args()
+  val tests = [parser-test]
 
-  run-utest(test-test)
+  args.map fn(arg)
+    match arg
+      "-test" -> tests.map(run-utest)
+  ()

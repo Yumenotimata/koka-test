@@ -6,7 +6,7 @@ pub effect test
   fun test-fail(expected : string, actual : string) : ()
 
 pub effect test-case
-  fun test-case-fail(test-name : string, expected : string, actual : string) : ()
+  fun test-case-fail(expected : string, actual : string) : ()
 
 pub effect test-suite
   fun test-suite-fail(suite-name : string, expected : string, actual : string) : ()
@@ -23,11 +23,11 @@ pub fun assert-eq(expected : a, actual : a, ?(==) : (a, a) -> bool, ?show : a ->
 pub fun test(test-name : string, tests : () -> <test> ()) : <test-case> ()
   handle tests
     fun test-fail(expected, actual)
-      test-case-fail(test-name, expected, actual)
+      test-case-fail(expected, actual)
 
 pub fun suite(suite-name : string, test-cases : () -> <test-case> ()) : <test-suite> ()
   handle test-cases
-    fun test-case-fail(description, expected, actual)
+    fun test-case-fail(expected, actual)
       test-suite-fail(suite-name, expected, actual)
 
 pub fun run-utest(test-suites : () -> <test-suite> ()) 
@@ -36,14 +36,13 @@ pub fun run-utest(test-suites : () -> <test-suite> ())
     fun test-suite-fail(suite-name, expected, actual)
       failures := failures.append([(suite-name, expected, actual)])
   
-  println("Running test...")
+  println("Running test...\n")
 
   if !failures.is-empty() then
-    println("Test Failed!")
     failures.map(fn((suite-name, expected, actual))
-      println("failed at " ++ suite-name)
-      println("\texpected " ++ expected ++ " ,but got " ++ actual)
+      println("failed at " ++ suite-name.show())
+      println("expected " ++ expected ++ ", but got " ++ actual)
     )
     ()
   else
-    println("All Test Has Passed")
+    println("All Test Has Passed!")
